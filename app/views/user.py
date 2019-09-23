@@ -1,23 +1,27 @@
 from flask import Blueprint, request, jsonify
 from app.extensions import db
 from app.models.user import User
+from werkzeug.security import check_password_hash, generate_password_hash
 
-user = Blueprint("user", __name__)
+auth = Blueprint("auth", __name__, url_prefix='/auth')
 
 
-@user.route("/")
+@auth.route("/")
 def index():
     return "我是新来的用户"
 
 
-@user.route("/user/register/", methods=["POST"])
+@auth.route("/register/", methods=["POST"])
 def register():
-    phone = request.json["phone"]
-    username = request.json["username"]
-    password = request.json["password"]
+    phone = request.form["phone"]
+    username = request.form["username"]
+    password = request.form["password"]
+
     obj = User.query.filter_by(phone=phone).first()
+
     if obj:
         return jsonify({"code": 201, "msg": "用户名已被注册"})
+
     if len(list(map(int, str(phone)))) == 11:
         save = User(phone=phone, username=username, password=password)
         db.session.add(save)
@@ -27,10 +31,10 @@ def register():
         return jsonify({"code": 201, "msg": "请输入正确手机号码"})
 
 
-@user.route("/user/login/", methods=["POST"])
+@auth.route("/login/", methods=["POST"])
 def login():
-    phone = request.json["phone"]
-    password = request.json["password"]
+    phone = request.form["phone"]
+    password = request.form["password"]
     obj = User.query.filter_by(phone=phone).first()
     print(obj, type(obj))
     if not obj:
