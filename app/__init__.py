@@ -2,7 +2,7 @@
 # 工厂函数
 from flask import Flask
 from app.config import config
-from app.views.user import user
+from app.views.user import auth
 from app.extensions import config_extensions
 from app.models.user import User
 
@@ -23,6 +23,6 @@ def create_app(config_name):
 
     app.config.from_object(config[config_name])
 
-    app.register_blueprint(user)
+    app.register_blueprint(auth)
     config_extensions(app)
     return app
