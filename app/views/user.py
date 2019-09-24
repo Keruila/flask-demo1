@@ -23,7 +23,7 @@ def register():
         return jsonify({"code": 201, "msg": "用户名已被注册"})
 
     if len(list(map(int, str(phone)))) == 11:
-        save = User(phone=phone, username=username, password=password)
+        save = User(phone=phone, username=username, password=generate_password_hash(password))
         db.session.add(save)
         db.session.commit()
         return jsonify({"code": 1, "userName": username, "msg": "注册成功"})
@@ -39,7 +39,7 @@ def login():
     print(obj, type(obj))
     if not obj:
         return jsonify({"code": 201, "msg": "未找到该用户"})
-    if password == obj.password:
+    if check_password_hash(obj.password, password):
         return jsonify({"code": 200, "msg": "登录成功"})
     else:
         return jsonify({"code": 200, "msg": "密码错误"})

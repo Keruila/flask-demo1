@@ -5,11 +5,13 @@ from app.config import config
 from app.views.user import auth
 from app.extensions import config_extensions
 from app.models.user import User
+from flask_cors import CORS
 
 
 def create_app(config_name):
     # 创建app实例
     app = Flask(__name__)
+    CORS(app, supports_credentials=True)
     # "develop": DevelopConfig,
     # "testing": TestConfig,
     # "product": ProductConfig,
