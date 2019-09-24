@@ -16,16 +16,16 @@ class User(db.Model):
 class Product(db.Model):
     __tablename__ = 'product'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    product_type = db.Column(db.String(30))
-    product_name = db.Column(db.String(30))
+    product_type = db.Column(db.String(30), nullable=False)  # 型号
+    product_name = db.Column(db.String(30), nullable=False)
     image_url = db.Column(db.Text)
 
 
 class Collect(db.Model):
     __tablename__ = 'collect'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
 
 
 class Article(db.Model):
@@ -34,13 +34,14 @@ class Article(db.Model):
     publish_time = db.Column(db.DateTime, default=datetime.datetime.now)
     title = db.Column(db.String(30), nullable=False)
     content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     comment = db.relationship('Comment', backref='article')
 
 
 class Comment(db.Model):
     __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    article_id = db.Column(db.Integer, db.ForeignKey('article.id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    article_id = db.Column(db.Integer, db.ForeignKey('article.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     comment_time = db.Column(db.DateTime, default=datetime.datetime.now)
     content = db.Column(db.Text, nullable=False)

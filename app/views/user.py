@@ -36,7 +36,7 @@ def login():
     phone = request.form["phone"]
     password = request.form["password"]
     obj = User.query.filter_by(phone=phone).first()
-    print(obj, type(obj))
+
     if not obj:
         return jsonify({"code": 201, "msg": "未找到该用户"})
     if check_password_hash(obj.password, password):
