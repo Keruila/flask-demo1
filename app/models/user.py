@@ -45,3 +45,16 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     comment_time = db.Column(db.DateTime, default=datetime.datetime.now)
     content = db.Column(db.Text, nullable=False)
+
+
+class Door(db.Model):
+    __tablename__ = 'door'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(20), nullable=False)
+    material = db.Column(db.String(10), nullable=False)  # 材质
+    color = db.Column(db.String(10), nullable=False)
+    door_type = db.Column(db.String(10), nullable=False)  # 型号
+    price = db.Column(db.Integer, nullable=False)
+    opening_closing_mode = db.Column(db.String(20))  # 可为空
+    description = db.Column(db.Text, nullable=False)
+    img_url = db.Column(db.String(30))  # 暂时设置可为空

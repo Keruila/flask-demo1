@@ -42,4 +42,4 @@ def login():
     if check_password_hash(obj.password, password):
         return jsonify({"code": 200, "msg": "登录成功"})
     else:
-        return jsonify({"code": 200, "msg": "密码错误"})
+        return jsonify({"code": 202, "msg": "密码错误"})
