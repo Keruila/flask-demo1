@@ -5,6 +5,11 @@ import os
 index = Blueprint("index", __name__)
 
 
+@index.route("/")
+def index():
+    return "剑阁峥嵘而崔嵬，一夫当关，万夫莫开"
+
+
 @index.route("/rotation/", methods=["GET"])
 def rotation_chart():
     rotation_path = "app/static/img/rotation/"

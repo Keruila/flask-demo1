@@ -8,11 +8,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 auth = Blueprint("auth", __name__, url_prefix='/auth')
 
 
-@auth.route("/")
-def index():
-    return "我是新来的用户"
-
-
 @auth.route("/register/", methods=["POST"])
 def register():
     phone = request.form["phone"]
