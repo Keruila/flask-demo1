@@ -3,6 +3,7 @@
 from flask import Flask
 from app.config import config
 from app.views.user import auth
+from app.views.article_api import article
 from app.views.index_api import index
 from app.views.door_api import product
 from app.extensions import config_extensions
@@ -30,5 +31,6 @@ def create_app(config_name):
     app.register_blueprint(auth)
     app.register_blueprint(index)
     app.register_blueprint(product)
+    app.register_blueprint(article)
     config_extensions(app)
     return app
