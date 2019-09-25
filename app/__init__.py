@@ -6,6 +6,7 @@ from app.views.user import auth
 from app.views.article_api import article
 from app.views.index_api import index
 from app.views.door_api import product
+from app.views.article_api import article
 from app.extensions import config_extensions
 from app.models.user import User
 from flask_cors import CORS

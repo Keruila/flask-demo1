@@ -10,9 +10,9 @@ auth = Blueprint("auth", __name__, url_prefix='/auth')
 
 @auth.route("/register/", methods=["POST"])
 def register():
-    phone = request.form["phone"]
-    username = request.form["username"]
-    password = request.form["password"]
+    phone = request.json["phone"]
+    username = request.json["username"]
+    password = request.json["password"]
 
     obj = User.query.filter_by(phone=phone).first()
 
@@ -28,10 +28,10 @@ def register():
         return jsonify({"code": 301, "msg": "请输入正确手机号码"})
 
 
-@auth.route("/login/", methods=["POST"])
+@auth.route("/login/", methods=["POST", "OPTIONS"])
 def login():
-    phone = request.form["phone"]
-    password = request.form["password"]
+    phone = request.json["phone"]
+    password = request.json["password"]
     obj = User.query.filter_by(phone=phone).first()
 
     if not obj:

@@ -23,7 +23,7 @@ def get_all_doors():
                 description=door.description,
                 img_url=door.img_url,
             )
-            data.append(door_info)
+            data.append({door.id: door_info})
         result = {
             "code": 200,
             'msg': "success",

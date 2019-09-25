@@ -36,6 +36,7 @@ class Article(db.Model):
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     comment = db.relationship('Comment', backref='article')
+    is_delete = db.Column(db.Integer, default=0)  # 0：没删除， 1：已删除
 
 
 class Comment(db.Model):
@@ -45,6 +46,7 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     comment_time = db.Column(db.DateTime, default=datetime.datetime.now)
     content = db.Column(db.Text, nullable=False)
+    is_delete = db.Column(db.Integer, default=0)  # 0：没删除， 1：已删除
 
 
 class Door(db.Model):
