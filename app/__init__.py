@@ -3,6 +3,7 @@
 from flask import Flask
 from app.config import config
 from app.views.user import auth
+from app.views.article_api import article
 from app.views.index_api import index
 from app.views.door_api import product
 from app.views.article_api import article
