@@ -50,7 +50,8 @@ class Comment(db.Model):
 class Door(db.Model):
     __tablename__ = 'door'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(20), nullable=False)
+    name = db.Column(db.String(20), nullable=False, default="双杰木门")
+    category = db.Column(db.String(20), nullable=False)
     material = db.Column(db.String(10), nullable=False)  # 材质
     color = db.Column(db.String(10), nullable=False)
     door_type = db.Column(db.String(10), nullable=False)  # 型号
