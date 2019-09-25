@@ -100,5 +100,3 @@ def get_all_comments(article_id):
     else:
         return jsonify({"code": 200, "msg": "获取成功", "data": list(map(replace_id_url, save))})
 
-
-        return jsonify({"code": 200, "msg": "获取成功", "data": list(map(replace_id_url, save))})
