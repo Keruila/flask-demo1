@@ -3,11 +3,11 @@
 from flask import Flask
 from app.config import config
 from app.views.user import auth
-from app.views.article_api import article
+from app.views.article_api import news
 from app.views.index_api import index
 from app.views.door_api import product
-from app.views.article_api import article
 from app.extensions import config_extensions
+from app.admin_view import init_admin
 from app.models.user import User
 from flask_cors import CORS
 
@@ -32,6 +32,7 @@ def create_app(config_name):
     app.register_blueprint(auth)
     app.register_blueprint(index)
     app.register_blueprint(product)
-    app.register_blueprint(article)
+    app.register_blueprint(news)
     config_extensions(app)
+    init_admin(app)
     return app

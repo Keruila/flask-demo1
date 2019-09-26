@@ -2,10 +2,10 @@ from ..models.user import Article, Comment, User
 from ..extensions import db
 from flask import Blueprint, jsonify, session, request
 
-article = Blueprint("article", __name__, url_prefix="/article")
+news = Blueprint("news", __name__, url_prefix="/news")
 
 # 增加文章
-@article.route('/add_article/', methods=["POST"])
+@news.route('/add_article/', methods=["POST"])
 def add_article():
     """新增一篇文章"""
     content = request.form["content"]
@@ -24,7 +24,7 @@ def add_article():
         return jsonify({"code": 201, "msg": "请先登录"})
 
 # 删除文章
-@article.route('/delete_article/<int:article_id>/', methods=["POST"])
+@news.route('/delete_article/<int:article_id>/', methods=["POST"])
 def delete_article(article_id):
     """删除id为article_id的文章"""
     save = Article.query.get(article_id)
@@ -36,7 +36,7 @@ def delete_article(article_id):
 
 
 # 增加评论
-@article.route('/add_comment/<int:article_id>/', methods=["POST"])
+@news.route('/add_comment/<int:article_id>/', methods=["POST"])
 def add_comment(article_id):
     """在id为article_id的文章下添加一条评论"""
     content = request.form["content"]
@@ -51,7 +51,7 @@ def add_comment(article_id):
 
 
 # 删除id为comment_id的评论
-@article.route('/delete_comment/<int:comment_id>/', methods=["POST"])
+@news.route('/delete_comment/<int:comment_id>/', methods=["POST"])
 def delete_comment(comment_id):
     """删除id为comment_id的评论"""
     save = Comment.query.get(comment_id)
@@ -75,7 +75,7 @@ def article1_replace_id_url(tasks):
 
 
 # 获得用户下的所有文章
-@article.route('/all_articles/<int:article_id>/', methods=["POST"])
+@news.route('/all_articles/<int:article_id>/', methods=["POST"])
 def get_all_article(article_id):
     save = Article.query.filter_by(user_id=article_id).all()
     s = User.query.filter_by(id=article_id).all()
@@ -92,7 +92,7 @@ def replace_id_url(tasks):
     return dict(content=tasks.content, comment_time=tasks.comment_time)
 
 
-@article.route('/all_comments/<int:article_id>/', methods=["POST"])
+@news.route('/all_comments/<int:article_id>/', methods=["POST"])
 def get_all_comments(article_id):
     save = Comment.query.filter_by(article_id=article_id).all()
     if len(save) == 0:
