@@ -103,9 +103,11 @@ def get_case_by_id(case_id):
         return jsonify(result)
     img_list = os.listdir(os.path.join('app/static/img/case', case.img_dir_url))
     if img_list:
-        img_path = os.path.join('/static/img/case/', case.img_dir_url, img_list[0])
+        img_path = []
+        for img in img_list:
+            img_path.append(os.path.join('/static/img/case/', case.img_dir_url, img))
     else:
-        img_path = '/static/img/case/show_if_no_img.jpg'
+        img_path = ['/static/img/case/show_if_no_img.jpg']
 
     case_info = dict(
         id=case.id,
