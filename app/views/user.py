@@ -1,10 +1,9 @@
-from flask import Blueprint, request, jsonify
-import re
+from flask import Blueprint, request, jsonify, abort
 from flask import session
 from app.extensions import db
 from app.models.user import User
 from werkzeug.security import check_password_hash, generate_password_hash
-
+import re, os
 auth = Blueprint("auth", __name__, url_prefix='/auth')
 
 
@@ -15,8 +14,11 @@ def register():
     password = request.json["password"]
 
     obj = User.query.filter_by(phone=phone).first()
+    obj1 = User.query.filter_by(username=username).first()
 
     if obj:
+        return jsonify({"code": 201, "msg": "手机号已被注册"})
+    if obj1:
         return jsonify({"code": 201, "msg": "用户名已被注册"})
 
     if re.match(r'^1[345789]\d{9}$', phone):
@@ -25,7 +27,7 @@ def register():
         db.session.commit()
         return jsonify({"code": 200, "userName": username, "msg": "注册成功"})
     else:
-        return jsonify({"code": 301, "msg": "请输入正确手机号码"})
+        return jsonify({"code": 201, "msg": "请输入正确手机号码"})
 
 
 @auth.route("/login/", methods=["POST", "OPTIONS"])
@@ -42,3 +44,46 @@ def login():
         return jsonify({"code": 200, "id": obj.id, "msg": "登录成功"})
     else:
         return jsonify({"code": 400, "msg": "密码错误"})
+
+
+@auth.route("/get_avatar_url/", methods=["POST"])
+def get_avatar_url():
+    """展示所有的头像"""
+    # 先获取图片的路径
+    chat_heard_path = "app/static/img/avatar/"
+    img_list = os.listdir(chat_heard_path)
+    if img_list:
+        print(img_list)
+        data = []
+        for img in img_list:
+            img_path = os.path.join("/static/img/avatar", img)
+            data.append({"img": img_path})
+        return jsonify({"code": 200, "msg": data})
+
+
+@auth.route("/set_avatar_url/", methods=["POST"])
+def set_avatar_url():
+    """用户设置头像"""
+    avatar_url = request.json["avatar_url"]
+    if avatar_url is None:
+        abort(404)
+    if not request.json:
+        abort(400)
+    id = session.get("user_id")
+    if id:
+        user = User.query.get(id)
+        user.avatar_url = avatar_url
+        db.session.commit()
+        return jsonify({"code": 200, "msg": "修改成功"})
+    return jsonify({"code": 201, "msg": "先登录在来吧"})
+
+
+# 错误的定制
+@auth.errorhandler(404)
+def bad_request(e):
+    return jsonify({"code": 201, "error": "not found"})
+
+
+@auth.errorhandler(400)
+def bad_request(e):
+    return jsonify({"code": 201, "error": "json地址错误"})
