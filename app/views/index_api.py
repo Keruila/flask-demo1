@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-
+from ..models.user import DecoratorCase
 import os
 
 index = Blueprint("index", __name__)
@@ -34,25 +34,89 @@ def rotation_chart():
         return jsonify(result)
 
 
-@index.route("/case/", methods=["GET"])
+# @index.route("/case/", methods=["GET"])
+# def decoration_case():
+#     decoration_path = "app/static/img/case/"
+#     img_list = os.listdir(decoration_path)
+#     if img_list:
+#         data = []
+#         for img in img_list:
+#             img_path = os.path.join("/static/img/case/", img)
+#             data.append({"img": img_path})
+#         result = {
+#             "code": 200,
+#             "msg": "请求成功",
+#             "data": data
+#         }
+#         return jsonify(result)
+#     else:
+#         result = {
+#             "code": 204,
+#             "msg": "没有数据可返回",
+#             "data": []
+#         }
+#         return jsonify(result)
+
+
+@index.route('/all_case/', methods=["GET"])
 def decoration_case():
-    rotation_path = "app/static/img/case/"
-    img_list = os.listdir(rotation_path)
-    if img_list:
+    all_case = DecoratorCase.query.all()
+    if all_case:
         data = []
-        for img in img_list:
-            img_path = os.path.join("/static/img/case/", img)
-            data.append({"img": img_path})
+        for case in all_case:
+            img_list = os.listdir(os.path.join('app/static/img/case', case.img_dir_url))
+            if img_list:
+                img_path = os.path.join('/static/img/case/', case.img_dir_url, img_list[0])
+            else:
+                img_path = '/static/img/case/show_if_no_img.jpg'
+
+            case_info = dict(
+                id=case.id,
+                address=case.address,
+                img_path=img_path,
+                description=case.description
+            )
+            data.append({case.id: case_info})
         result = {
-            "code": 200,
-            "msg": "请求成功",
-            "data": data
+            'code': 200,
+            'message': '成功',
+            'data': data
         }
-        return jsonify(result)
     else:
         result = {
-            "code": 204,
-            "msg": "没有数据可返回",
-            "data": []
+            'code': 203,
+            'message': '没有数据',
+            'data': []
+        }
+    return jsonify(result)
+
+
+@index.route('/case/<int:case_id>', methods=["GET"])
+def get_case_by_id(case_id):
+    case = DecoratorCase.query.filter_by(id=case_id).first()
+    if not case:
+        result = {
+            'code': 203,
+            'message': '未找到',
+            'data': []
         }
         return jsonify(result)
+    img_list = os.listdir(os.path.join('app/static/img/case', case.img_dir_url))
+    if img_list:
+        img_path = os.path.join('/static/img/case/', case.img_dir_url, img_list[0])
+    else:
+        img_path = '/static/img/case/show_if_no_img.jpg'
+
+    case_info = dict(
+        id=case.id,
+        address=case.address,
+        img_path=img_path,
+        description=case.description
+    )
+
+    result = {
+        'code': 200,
+        'message': '成功',
+        'data': [case_info]
+    }
+    return jsonify(result)
