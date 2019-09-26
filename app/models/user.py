@@ -61,3 +61,12 @@ class Door(db.Model):
     opening_closing_mode = db.Column(db.String(20))  # 可为空
     description = db.Column(db.Text, nullable=False)
     img_url = db.Column(db.String(30))  # 暂时设置可为空
+
+
+class DecoratorCase(db.Model):
+    __tablename__ = 'decorator_case'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    address = db.Column(db.String(30), nullable=False)
+    img_dir_url = db.Column(db.String(30))  # 设置为一个文件夹，里面放此家装案例的所有图片
+    description = db.Column(db.Text)
+
