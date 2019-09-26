@@ -1,5 +1,4 @@
-from ..models.user import Article,Comment
-from flask import Blueprint, jsonify, request, session
+from ..models.user import Article, Comment, User
 from ..extensions import db
 from flask import Blueprint, jsonify, session, request
 
@@ -15,6 +14,10 @@ def add_article():
     if user_id != "null":
         save = Article(content=content, title=title, user_id=user_id)
         db.session.add(save)
+    user_id = session.get("user_id")
+    if user_id:
+        sav = Article(content=content, title=title, user_id=user_id)
+        db.session.add(sav)
         db.session.commit()
         return jsonify({"code": 200, "user_id": user_id, "msg": "发表成功"})
     else:
@@ -32,7 +35,8 @@ def delete_article(article_id):
     return jsonify({"code": 201, "msg": "您还没有发表过文章"})
 
 
-@article.route('/add_comment/<int:article_id>', methods=["POST"])
+# 增加评论
+@article.route('/add_comment/<int:article_id>/', methods=["POST"])
 def add_comment(article_id):
     """在id为article_id的文章下添加一条评论"""
     content = request.form["content"]
@@ -44,6 +48,7 @@ def add_comment(article_id):
         return jsonify({"code": 200, "msg": "评论成功"})
     else:
         return jsonify({"code": 201, "msg": "请先登录后再来评论"})
+
 
 # 删除id为comment_id的评论
 @article.route('/delete_comment/<int:comment_id>/', methods=["POST"])
@@ -58,6 +63,30 @@ def delete_comment(comment_id):
         return jsonify({"code": 200, "msg": "删除成功"})
 
 
+def article_replace_id_url(tasks):
+    return dict(
+        content=tasks.content,
+        title=tasks.title,
+        publish_time=tasks.publish_time)
+
+
+def article1_replace_id_url(tasks):
+    return dict(username=tasks.username)
+
+
+# 获得用户下的所有文章
+@article.route('/all_articles/<int:article_id>/', methods=["POST"])
+def get_all_article(article_id):
+    save = Article.query.filter_by(user_id=article_id).all()
+    s = User.query.filter_by(id=article_id).all()
+    if len(save) == 0:
+        return jsonify({"code": 201, "msg": "没有找到您需要的内容"})
+    else:
+        a = list(map(article_replace_id_url, save)) + list(map(article1_replace_id_url, s))
+
+        return jsonify({"code": 200, "msg": "获取成功","data": a})
+
+
 # 获得id为article_id的文章下的所有评论
 def replace_id_url(tasks):
     return dict(content=tasks.content, comment_time=tasks.comment_time)
@@ -70,5 +99,4 @@ def get_all_comments(article_id):
         return jsonify({"code": 201, "msg": "没有找到您需要的内容"})
     else:
         return jsonify({"code": 200, "msg": "获取成功", "data": list(map(replace_id_url, save))})
-
 
