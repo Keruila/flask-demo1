@@ -34,32 +34,32 @@ def rotation_chart():
         return jsonify(result)
 
 
-# @index.route("/case/", methods=["GET"])
-# def decoration_case():
-#     decoration_path = "app/static/img/case/"
-#     img_list = os.listdir(decoration_path)
-#     if img_list:
-#         data = []
-#         for img in img_list:
-#             img_path = os.path.join("/static/img/case/", img)
-#             data.append({"img": img_path})
-#         result = {
-#             "code": 200,
-#             "msg": "请求成功",
-#             "data": data
-#         }
-#         return jsonify(result)
-#     else:
-#         result = {
-#             "code": 204,
-#             "msg": "没有数据可返回",
-#             "data": []
-#         }
-#         return jsonify(result)
+@index.route("/case/", methods=["GET"])
+def decoration_case():
+    decoration_path = "app/static/img/case/index_case"
+    img_list = os.listdir(decoration_path)
+    if img_list:
+        data = []
+        for img in img_list:
+            img_path = os.path.join("/static/img/case/index_case", img)
+            data.append({"img": img_path})
+        result = {
+            "code": 200,
+            "msg": "请求成功",
+            "data": data
+        }
+        return jsonify(result)
+    else:
+        result = {
+            "code": 204,
+            "msg": "没有数据可返回",
+            "data": []
+        }
+        return jsonify(result)
 
 
 @index.route('/all_case/', methods=["GET"])
-def decoration_case():
+def decoration_case_on_detail():
     all_case = DecoratorCase.query.all()
     if all_case:
         data = []
@@ -76,7 +76,7 @@ def decoration_case():
                 img_path=img_path,
                 description=case.description
             )
-            data.append({case.id: case_info})
+            data.append(case_info)
         result = {
             'code': 200,
             'message': '成功',
