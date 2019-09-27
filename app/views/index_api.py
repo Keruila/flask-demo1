@@ -102,11 +102,11 @@ def get_case_by_id(case_id):
         }
         return jsonify(result)
     target_dir = os.path.join('app/static/img/case', case.img_dir_url)
-    if not target_dir:
+    if not target_dir:  # 没有家装案例的文件夹
         img_path = ['/static/img/case/show_if_no_img.jpg']
     else:
         img_list = os.listdir(target_dir)
-        if img_list:
+        if img_list:  # 有文件夹，其中为空
             img_path = []
             for img in img_list:
                 img_path.append(os.path.join('/static/img/case/', case.img_dir_url, img))
