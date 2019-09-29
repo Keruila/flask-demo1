@@ -22,13 +22,13 @@ def register():
     if obj1:
         return jsonify({"code": 201, "msg": "用户名已被注册"})
 
-    if re.match(r'^1[345789]\d{9}$', phone):
+    if re.match(r'/^1(3\d|4[4-9]|5[0-35-9]|6[67]|7[013-8]|8[0-9]|9[0-9])\d{8}$', phone):
         save = User(phone=phone, username=username, password=generate_password_hash(password))
         db.session.add(save)
         db.session.commit()
         return jsonify({"code": 200, "userName": username, "msg": "注册成功"})
     else:
-        return jsonify({"code": 201, "msg": "请输入正确手机号码"})
+        return jsonify({"code": 201, "msg": "请输入正确格式的手机号码"})
 
 
 @auth.route("/login/", methods=["POST", "OPTIONS"])
@@ -64,7 +64,7 @@ def set_userinfo():
     s = User.query.filter_by(id=id).all()
 
     if id:
-        return jsonify({"code": 200, "data": list(map(userinfo_replace_id_url, s)) , "msg": "请谨慎修改信息"})
+        return jsonify({"code": 200, "data": list(map(userinfo_replace_id_url, s)), "msg": "请谨慎修改信息"})
     return jsonify({"code": 201, "msg": "请先登录"})
 
 
