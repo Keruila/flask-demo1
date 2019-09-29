@@ -13,6 +13,13 @@ def register():
     phone = request.json["phone"]
     username = request.json["username"]
     password = request.json["password"]
+    lt = ["+", "-", "*", "/", "!", "@", "#", "$", "%",
+          "^", "&", "(", ")", "~", "<", ">", "{", "}",
+          "[", "]", "|", "?", "。", "，", "：", "；",
+          "“", "”", "’", "‘", "`"]
+    for i in lt:
+        if i in username:
+            return jsonify({"code": 201, "msg": "用户名含有非法字符"})
 
     obj = User.query.filter_by(phone=phone).first()
     obj1 = User.query.filter_by(username=username).first()
@@ -74,6 +81,14 @@ def set_username():
     id = session.get("user_id")
     user = User.query.get(id)
     new_username1 = request.json["username"]
+    lt = ["+", "-", "*", "/", "!", "@", "#", "$", "%",
+          "^", "&", "(", ")", "~", "<", ">", "{", "}",
+          "[", "]", "|", "?", "。", "，", "：", "；",
+          "“", "”", "’", "‘", "`"]
+    for i in lt:
+        if i in new_username1:
+            return jsonify({"code": 201, "msg": "用户名含有非法字符"})
+
     new_username = User.query.filter_by(username=new_username1).first()
     if user is None:
         abort(404)
