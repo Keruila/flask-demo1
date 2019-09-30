@@ -38,7 +38,7 @@ def register():
         return jsonify({"code": 201, "msg": "请输入正确格式的手机号码"})
 
 
-@auth.route("/login/", methods=["POST", "OPTIONS"])
+@auth.route("/login/", methods=["POST"])
 def login():
     phone = request.json["phone"]
     password = request.json["password"]
