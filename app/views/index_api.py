@@ -12,7 +12,7 @@ index = Blueprint("index", __name__)
 
 @index.route("/rotation/", methods=["GET"])
 def rotation_chart():
-    rotation_path = "app/static/img/rotation/"
+    rotation_path = "./app/static/img/rotation/"
     img_list = os.listdir(rotation_path)
     if img_list:
         data = []
@@ -124,5 +124,15 @@ def get_case_by_id(case_id):
         'code': 200,
         'message': '成功',
         'data': [case_info]
+    }
+    return jsonify(result)
+
+
+@index.route("/video/", methods=["GET"])
+def video():
+    result = {
+        'code': 200,
+        'msg': 'success',
+        'img_url': "/static/video/test.mp4"
     }
     return jsonify(result)

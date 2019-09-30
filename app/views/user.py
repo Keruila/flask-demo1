@@ -110,6 +110,7 @@ def set_password():
         return jsonify({"code": 200, "msg": "修改成功"})
     return jsonify({"code": 201, "msg": "先登录在来吧"})
 
+
 @auth.route("/get_avatar_url/", methods=["POST"])
 def get_avatar_url():
     """展示所有的头像"""
@@ -151,3 +152,27 @@ def bad_request(e):
 @auth.errorhandler(400)
 def bad_request(e):
     return jsonify({"code": 201, "error": "not json"})
+
+
+@auth.route('/profile/', methods=["POST"])
+def profile():
+    user_id = session.get("id")
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        result = {
+            'code': 201,
+            'msg': '用户不存在',
+            "data": {}
+        }
+        return jsonify(result)
+    user_profile = dict(
+        id=user.id,
+        username=user.username,
+        phone=user.phone
+    )
+    result = {
+        'code': 200,
+        'msg': '请求成功',
+        "data": user_profile
+    }
+    return jsonify(result)
