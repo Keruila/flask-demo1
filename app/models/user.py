@@ -37,6 +37,7 @@ class Article(db.Model):
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     comment = db.relationship('Comment', backref='article')
+    img_url = db.Column(db.String(50))
     is_delete = db.Column(db.Integer, default=0)  # 0：没删除， 1：已删除
 
 
