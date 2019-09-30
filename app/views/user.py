@@ -16,7 +16,7 @@ def register():
     lt = ["+", "-", "*", "/", "!", "@", "#", "$", "%",
           "^", "&", "(", ")", "~", "<", ">", "{", "}",
           "[", "]", "|", "?", "。", "，", "：", "；",
-          "“", "”", "’", "‘", "`"]
+          "“", "”", "’", "‘", "`", "《", "》", " "]
     for i in lt:
         if i in username:
             return jsonify({"code": 201, "msg": "用户名含有非法字符"})
@@ -29,7 +29,7 @@ def register():
     if obj1:
         return jsonify({"code": 201, "msg": "用户名已被注册"})
 
-    if re.match(r'/^1(3\d|4[4-9]|5[0-35-9]|6[67]|7[013-8]|8[0-9]|9[0-9])\d{8}$', phone):
+    if re.match(r'^1(3[0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|8[0-9]|9[89])\d{8}$', phone):
         save = User(phone=phone, username=username, password=generate_password_hash(password))
         db.session.add(save)
         db.session.commit()
