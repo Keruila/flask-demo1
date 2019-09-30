@@ -11,6 +11,7 @@ class User(db.Model):
     password = db.Column(db.String(20), nullable=False)
     is_manager = db.Column(db.Boolean, default=False)
     avatar_url = db.Column(db.Text, nullable=True)  # 图片地址
+    article = db.relationship('Article', backref='user')
 
 
 class Product(db.Model):
