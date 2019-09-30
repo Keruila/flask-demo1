@@ -13,6 +13,13 @@ def register():
     phone = request.json["phone"]
     username = request.json["username"]
     password = request.json["password"]
+    lt = ["+", "-", "*", "/", "!", "@", "#", "$", "%",
+          "^", "&", "(", ")", "~", "<", ">", "{", "}",
+          "[", "]", "|", "?", "。", "，", "：", "；",
+          "“", "”", "’", "‘", "`", "《", "》", " "]
+    for i in lt:
+        if i in username:
+            return jsonify({"code": 201, "msg": "用户名含有非法字符"})
 
     obj = User.query.filter_by(phone=phone).first()
     obj1 = User.query.filter_by(username=username).first()
@@ -22,13 +29,13 @@ def register():
     if obj1:
         return jsonify({"code": 201, "msg": "用户名已被注册"})
 
-    if re.match(r'^1[345789]\d{9}$', phone):
+    if re.match(r'^1(3[0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|8[0-9]|9[89])\d{8}$', phone):
         save = User(phone=phone, username=username, password=generate_password_hash(password))
         db.session.add(save)
         db.session.commit()
         return jsonify({"code": 200, "userName": username, "msg": "注册成功"})
     else:
-        return jsonify({"code": 201, "msg": "请输入正确手机号码"})
+        return jsonify({"code": 201, "msg": "请输入正确格式的手机号码"})
 
 
 @auth.route("/login/", methods=["POST", "OPTIONS"])
@@ -64,7 +71,7 @@ def set_userinfo():
     s = User.query.filter_by(id=id).all()
 
     if id:
-        return jsonify({"code": 200, "data": list(map(userinfo_replace_id_url, s)) , "msg": "请谨慎修改信息"})
+        return jsonify({"code": 200, "data": list(map(userinfo_replace_id_url, s)), "msg": "请谨慎修改信息"})
     return jsonify({"code": 201, "msg": "请先登录"})
 
 
@@ -74,6 +81,14 @@ def set_username():
     id = session.get("user_id")
     user = User.query.get(id)
     new_username1 = request.json["username"]
+    lt = ["+", "-", "*", "/", "!", "@", "#", "$", "%",
+          "^", "&", "(", ")", "~", "<", ">", "{", "}",
+          "[", "]", "|", "?", "。", "，", "：", "；",
+          "“", "”", "’", "‘", "`", "《", "》", " "]
+    for i in lt:
+        if i in new_username1:
+            return jsonify({"code": 201, "msg": "用户名含有非法字符"})
+
     new_username = User.query.filter_by(username=new_username1).first()
     if user is None:
         abort(404)
