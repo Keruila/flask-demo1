@@ -1,6 +1,7 @@
 from ..models.user import Article, Comment, User
 from ..extensions import db
 from flask import Blueprint, jsonify, session, request
+import os
 
 news = Blueprint("news", __name__, url_prefix="/news")
 
@@ -74,17 +75,51 @@ def article1_replace_id_url(tasks):
     return dict(username=tasks.username)
 
 
-# 获得用户下的所有文章
-@news.route('/all_articles/<int:article_id>/', methods=["POST"])
-def get_all_article(article_id):
-    save = Article.query.filter_by(user_id=article_id).all()
-    s = User.query.filter_by(id=article_id).all()
-    if len(save) == 0:
-        return jsonify({"code": 201, "msg": "没有找到您需要的内容"})
-    else:
-        a = list(map(article_replace_id_url, save)) + list(map(article1_replace_id_url, s))
+@news.route('/all_articles/', methods=["POST"])
+def get_all_article():
+    """获得所有文章"""
+    # user_id = request.json["id"]
+    # user = User.query.filter_by(id=user_id).first()
+    # article = Article.query.filter_by(user_id=user_id)
+    all_article = Article.query.all()
 
-        return jsonify({"code": 200, "msg": "获取成功","data": a})
+
+@news.route('/article/', methods=["POST"])
+def get_article_by_id():
+    """根据文章id返回文章所有信息"""
+    try:
+        article_id = request.json["id"]
+        article = Article.query.filter_by(id=article_id)
+        content = article.content.split("*")  # list
+        user = article.user_id.username
+        img_dir = "./app/static/img/article/" + article.img_url
+        imgs = os.listdir(img_dir)
+        img_list = []
+        for img in imgs:
+            img_path = os.path.join("/static/img/rotation/", img)
+            img_list.append(img_path)
+        data = dict(
+            id=article.id,
+            publish_time=article.publish_time,
+            title=article.title,
+            content=content,
+            user_id=user,
+            img_list=img_list
+        )
+        result = {
+            'code': 200,
+            'msg': '请求成功',
+            'data': data
+        }
+    except Exception as e:
+        print(e)
+        result = {
+            'code': 204,
+            'msg': '出错',
+            'data': {}
+        }
+    return jsonify(result)
+
 
 
 # 获得id为article_id的文章下的所有评论
