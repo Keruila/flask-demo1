@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 from flask import session
 from app.extensions import db
-from app.models.user import User
+from app.models.user import User, Collect
 from werkzeug.security import check_password_hash, generate_password_hash
 import re, os
 
@@ -189,5 +189,69 @@ def profile():
         'code': 200,
         'msg': '请求成功',
         "data": user_profile
+    }
+    return jsonify(result)
+
+
+@auth.route('/add_collect/', methods=["POST"])
+def add_collect():
+    """加入收藏"""
+    user_id = request.json['user_id']
+    door_id = request.json['door_id']
+    if not user_id or not door_id:
+        result = {
+            'code': 204,
+            'msg': '缺失用户id或商品id'
+        }
+        return jsonify(result)
+    collect = Collect(user_id=user_id, door_id=door_id)
+    db.session.add(collect)
+    db.session.commit()
+    result = {
+        'code': 200,
+        'msg': '收藏成功'
+    }
+    return jsonify(result)
+
+
+@auth.route('/cancel_collect/', methods=['POST'])
+def cancel_collect():
+    """取消收藏"""
+    user_id = request.json['user_id']
+    door_id = request.json['door_id']
+    if not user_id or not door_id:
+        result = {
+            'code': 204,
+            'msg': '缺失用户id或商品id'
+        }
+        return jsonify(result)
+    collect = Collect.query.filter_by(user_id=user_id, door_id=door_id).first()
+    db.session.delete(collect)
+    db.session.commit()
+    result = {
+        'code': 200,
+        'msg': '取消收藏成功'
+    }
+    return jsonify(result)
+
+
+@auth.route('/all_collect/', methods=['POST'])
+def all_collect():
+    """所有收藏"""
+    user_id = request.json['user_id']
+    collects = Collect.query.filter_by(user_id=user_id).all()  # list
+    print(collects, type(collects))
+    if not collects:
+        result = {
+            'code': 203,
+            'msg': '某得收藏',
+            'data': []
+        }
+        return jsonify(result)
+    data = [collect.door_id for collect in collects]
+    result = {
+        'code': 200,
+        'msg': 'id为{}的用户收藏的所有商品的id返回成功'.format(user_id),
+        'data': data
     }
     return jsonify(result)
