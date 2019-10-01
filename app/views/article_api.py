@@ -89,9 +89,10 @@ def get_article_by_id():
     """根据文章id返回文章所有信息"""
     try:
         article_id = request.json["id"]
-        article = Article.query.filter_by(id=article_id)
+        article = Article.query.filter_by(id=article_id).first()
         content = article.content.split("*")  # list
-        user = article.user_id.username
+        # user = article.user_id.username
+        username = User.query.get(article.user_id).username
         img_dir = "./app/static/img/article/" + article.img_url
         imgs = os.listdir(img_dir)
         img_list = []
@@ -103,7 +104,7 @@ def get_article_by_id():
             publish_time=article.publish_time,
             title=article.title,
             content=content,
-            user_id=user,
+            user_id=username,
             img_list=img_list
         )
         result = {
