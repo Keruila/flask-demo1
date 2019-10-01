@@ -14,19 +14,19 @@ class User(db.Model):
     article = db.relationship('Article', backref='user')
 
 
-class Product(db.Model):
-    __tablename__ = 'product'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    product_type = db.Column(db.String(30), nullable=False)  # 型号
-    product_name = db.Column(db.String(30), nullable=False)
-    image_url = db.Column(db.Text)
+# class Product(db.Model):
+#     __tablename__ = 'product'
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     product_type = db.Column(db.String(30), nullable=False)  # 型号
+#     product_name = db.Column(db.String(30), nullable=False)
+#     image_url = db.Column(db.Text)
 
 
 class Collect(db.Model):
     __tablename__ = 'collect'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    door_id = db.Column(db.Integer, db.ForeignKey('door.id'), nullable=False)
 
 
 class Article(db.Model):
