@@ -97,7 +97,7 @@ def get_article_by_id():
         imgs = os.listdir(img_dir)
         img_list = []
         for img in imgs:
-            img_path = os.path.join("/static/img/rotation/", img)
+            img_path = os.path.join(img_dir, img)
             img_list.append(img_path)
         data = dict(
             id=article.id,
