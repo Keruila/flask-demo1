@@ -29,6 +29,14 @@ class Collect(db.Model):
     door_id = db.Column(db.Integer, db.ForeignKey('door.id'), nullable=False)
 
 
+class ShoppingCart(db.Model):
+    __tablename__ = 'shoppingcart'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    door_id = db.Column(db.Integer, db.ForeignKey('door.id'), nullable=False)
+    number = db.Column(db.Integer, default=1)
+
+
 class Article(db.Model):
     __tableaname__ = 'article'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -71,4 +79,3 @@ class DecoratorCase(db.Model):
     address = db.Column(db.String(30), nullable=False)
     img_dir_url = db.Column(db.String(30))  # 设置为一个文件夹，里面放此家装案例的所有图片
     description = db.Column(db.Text)
-
