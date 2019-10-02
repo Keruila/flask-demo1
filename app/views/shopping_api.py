@@ -83,7 +83,7 @@ def all_shopping_cart():
         return jsonify({"code": 204, "msg": "空空如也", "data":[]})
 
     data = []
-    # shoppingcart.door_id
+
     for shoppingcart in shoppingcarts:
         d = dict(
             door_id= shoppingcart.door_id,
