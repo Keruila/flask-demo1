@@ -96,7 +96,7 @@ def delete_shopping():
     #         u.number -=1
     #         return jsonify({"code":200, "msg":"操作成功"})
 
-    de = ShoppingCart.query.filter_by(user_id=user_id).first()
+    de = ShoppingCart.query.filter_by(user_id=user_id, door_id=door_id).first()
     db.session.delete(de)
     db.session.commit()
     return jsonify({"code": 200, "msg": "删除成功"})
