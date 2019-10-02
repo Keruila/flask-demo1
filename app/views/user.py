@@ -67,7 +67,8 @@ def userinfo_replace_id_url(tasks):
 # 个人中心 获取用户基本信息
 @auth.route("/set_userinfo/", methods=["POST"])
 def set_userinfo():
-    id = session.get("user_id")
+    id= request.json["user_id"]
+    # id = session.get("user_id")
     s = User.query.filter_by(id=id).all()
 
     if id:
@@ -78,7 +79,8 @@ def set_userinfo():
 # 修改用户名
 @auth.route("/set_username/", methods=["POST"])
 def set_username():
-    id = session.get("user_id")
+    id = request.json["user_id"]
+    # id = session.get("user_id")
     user = User.query.get(id)
     new_username1 = request.json["username"]
     lt = ["+", "-", "*", "/", "!", "@", "#", "$", "%",
@@ -107,7 +109,8 @@ def set_username():
 # 修改密码
 @auth.route("/set_password/", methods=["POST"])
 def set_password():
-    id = session.get("user_id")
+    id = request.json["user_id"]
+    # id = session.get("user_id")
     user = User.query.get(id)
     new_password = request.json["password"]
     # new_username = User.query.filter_by(password=new_username1).first()
@@ -149,7 +152,8 @@ def set_avatar_url():
         abort(404)
     if not request.json:
         abort(400)
-    id = session.get("user_id")
+    id = request.json["user_id"]
+    # id = session.get("user_id")
     if id:
         user = User.query.get(id)
         user.avatar_url = avatar_url
@@ -171,7 +175,8 @@ def bad_request(e):
 
 @auth.route('/profile/', methods=["POST"])
 def profile():
-    user_id = session.get("id")
+    user_id = request.json['user_id']
+    # user_id = session.get("id")
     user = User.query.filter_by(id=user_id).first()
     if not user:
         result = {

@@ -82,4 +82,4 @@ def all_shopping_cart():
         return jsonify({"code": 204, "msg": "空空如也", "data":[]})
 
     data = [shoppingcart.door_id for shoppingcart in shoppingcarts]
-    return jsonify({"code":200, "msg":'id为{}的用户收藏的所有商品的id返回成功'.format(user_id), "data":data})
+    return jsonify({"code":200, "msg":'id为{}的用户购物车的所有商品的id返回成功'.format(user_id), "data":data})
