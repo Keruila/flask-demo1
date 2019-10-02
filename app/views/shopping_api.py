@@ -13,8 +13,9 @@ shopping = Blueprint("shopping", __name__, url_prefix='/shopping')
 def add_shopping_cart():
     user_id = request.json["user_id"]
     door_id = request.json["door_id"]
-    u = ShoppingCart.query.filter_by(user_id=user_id).first()
-    d = ShoppingCart.query.filter_by(door_id=door_id).first()
+    u = ShoppingCart.query.filter_by(user_id=user_id,door_id=door_id).first()
+
+    # u.door_id = ShoppingCart.query.filter_by(door_id=door_id).first()
     if not user_id:
         result = {
             "code": 204,
@@ -27,7 +28,7 @@ def add_shopping_cart():
             "msg": "缺少产品id"
         }
         return jsonify(result)
-    if u and d:
+    if u :
         u.number += 1
         db.session.commit()
         return jsonify({"code": 200, "msg": "收藏成功"})
