@@ -7,6 +7,7 @@ from app.views.article_api import news
 from app.views.index_api import index
 from app.views.door_api import product
 from app.views.shopping_api import shopping
+from app.views.order_api import order
 from app.views.search import search
 from app.extensions import config_extensions
 from app.admin_view import init_admin
@@ -37,6 +38,7 @@ def create_app(config_name):
     app.register_blueprint(news)
     app.register_blueprint(shopping)
     app.register_blueprint(search)
+    app.register_blueprint(order)
     config_extensions(app)
     init_admin(app)
     return app

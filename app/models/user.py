@@ -92,7 +92,7 @@ class Order(db.Model):
     total_price = db.Column(db.Float, default=0.00)  # 商品总价
     fare = db.Column(db.Integer, default=0)  # 运费
     pay_money = db.Column(db.Float, default=0.00)  # 实际支付金额
-    address = db.Column(db.String(100), nullable=False)  # 收货地址
+    address = db.Column(db.String(100), nullable=False)  # 收货地址，没有用QAQ
     order_generation_time = db.Column(db.DateTime, default=datetime.datetime.now)  # 订单生成时间
     pay_time = db.Column(db.DateTime, default=datetime.datetime.now)  # 付款时间
     goods = db.relationship('SubOrder', backref='order')  # 该订单的商品
