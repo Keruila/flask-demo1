@@ -9,8 +9,9 @@ class User(db.Model):
     phone = db.Column(db.String(20), unique=True, nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(20), nullable=False)
+    # sex = db.Column(db.Integer, default=0)  # 0男，1女
     is_manager = db.Column(db.Boolean, default=False)
-    avatar_url = db.Column(db.Text, nullable=True)  # 图片地址
+    avatar_url = db.Column(db.Text, nullable=True, default='/static/img/avatar/default.jpg')  # 图片地址
     article = db.relationship('Article', backref='user')
 
 
@@ -79,3 +80,27 @@ class DecoratorCase(db.Model):
     address = db.Column(db.String(30), nullable=False)
     img_dir_url = db.Column(db.String(30))  # 设置为一个文件夹，里面放此家装案例的所有图片
     description = db.Column(db.Text)
+
+
+class Order(db.Model):
+    __tablename__ = 'order'
+    # id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.String(50), primary_key=True)  # 订单编号
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # 用户id
+    status = db.Column(db.Integer, default=0)  # 订单状态，0未付款，1已付款，2已签收
+    total_count = db.Column(db.Integer, default=0)  # 商品总数量
+    total_price = db.Column(db.Float, default=0.00)  # 商品总价
+    fare = db.Column(db.Integer, default=0)  # 运费
+    pay_money = db.Column(db.Float, default=0.00)  # 实际支付金额
+    address = db.Column(db.String(100), nullable=False)  # 收货地址
+    order_generation_time = db.Column(db.DateTime, default=datetime.datetime.now)  # 订单生成时间
+    pay_time = db.Column(db.DateTime, default=datetime.datetime.now)  # 付款时间
+    goods = db.relationship('SubOrder', backref='order')  # 该订单的商品
+
+
+class SubOrder(db.Model):
+    __tablename__ = 'sub_order'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    order_id = db.Column(db.String(50), db.ForeignKey('order.id'), nullable=False)
+    door_id = db.Column(db.Integer, db.ForeignKey('door.id'), nullable=False)
+    count = db.Column(db.Integer, default=1)
