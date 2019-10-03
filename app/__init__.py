@@ -8,10 +8,13 @@ from app.views.index_api import index
 from app.views.door_api import product
 from app.views.shopping_api import shopping
 from app.views.search import search
+from app.views.orders_api import alipay
 from app.extensions import config_extensions
 from app.admin_view import init_admin
 from app.models.user import User
 from flask_cors import CORS
+
+
 
 
 def create_app(config_name):
@@ -36,6 +39,7 @@ def create_app(config_name):
     app.register_blueprint(product)
     app.register_blueprint(news)
     app.register_blueprint(shopping)
+    app.register_blueprint(alipay)
     app.register_blueprint(search)
     config_extensions(app)
     init_admin(app)

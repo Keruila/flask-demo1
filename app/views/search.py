@@ -2,7 +2,7 @@ from app.models.user import Door
 from flask import request
 import re
 from flask import Blueprint, jsonify, abort
-from aip import AipNlp
+# from aip import AipNlp
 search= Blueprint("search", __name__,url_prefix="/s")
 def replace_id_url(tasks):
     return dict(
