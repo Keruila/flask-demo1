@@ -11,11 +11,13 @@ def add_article():
     """新增一篇文章"""
     content = request.form["content"]
     title = request.form["title"]
-    user_id = session.get("user_id", "null")
-    if user_id != "null":
+    user_id= request.json["user_id"]
+    # user_id = session.get("user_id", "null")
+    if not user_id :
         save = Article(content=content, title=title, user_id=user_id)
         db.session.add(save)
-    user_id = session.get("user_id")
+    user_id = request.json["user_id"]
+    # user_id = session.get("user_id")
     if user_id:
         sav = Article(content=content, title=title, user_id=user_id)
         db.session.add(sav)
@@ -41,7 +43,8 @@ def delete_article(article_id):
 def add_comment(article_id):
     """在id为article_id的文章下添加一条评论"""
     content = request.form["content"]
-    user_id = session.get("user_id")
+    user_id= request.json["user_id"]
+    # user_id = session.get("user_id")
     if user_id:
         save = Comment(content=content, user_id=user_id, article_id=article_id)
         db.session.add(save)

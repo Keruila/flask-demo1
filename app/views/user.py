@@ -13,21 +13,20 @@ def register():
     phone = request.json["phone"]
     username = request.json["username"]
     password = request.json["password"]
+    obj = User.query.filter_by(phone=phone).first()
+    obj1 = User.query.filter_by(username=username).first()
     lt = ["+", "-", "*", "/", "!", "@", "#", "$", "%",
           "^", "&", "(", ")", "~", "<", ">", "{", "}",
           "[", "]", "|", "?", "。", "，", "：", "；",
           "“", "”", "’", "‘", "`", "《", "》", " "]
-    for i in lt:
-        if i in username:
-            return jsonify({"code": 201, "msg": "用户名含有非法字符"})
-
-    obj = User.query.filter_by(phone=phone).first()
-    obj1 = User.query.filter_by(username=username).first()
-
     if obj:
         return jsonify({"code": 201, "msg": "手机号已被注册"})
     if obj1:
         return jsonify({"code": 201, "msg": "用户名已被注册"})
+
+    for i in lt:
+        if i in username:
+            return jsonify({"code": 201, "msg": "用户名含有非法字符"})
 
     if re.match(r'^1(3[0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|8[0-9]|9[89])\d{8}$', phone):
         save = User(phone=phone, username=username, password=generate_password_hash(password))
@@ -58,7 +57,7 @@ def login():
 
 def userinfo_replace_id_url(tasks):
     return dict(
-        phone = tasks.phone,
+        phone=tasks.phone,
         username=tasks.username,
         avatar_url=tasks.avatar_url
     )
@@ -67,7 +66,8 @@ def userinfo_replace_id_url(tasks):
 # 个人中心 获取用户基本信息
 @auth.route("/set_userinfo/", methods=["POST"])
 def set_userinfo():
-    id = session.get("user_id")
+    id = request.json["user_id"]
+    # id = session.get("user_id")
     s = User.query.filter_by(id=id).all()
 
     if id:
@@ -78,7 +78,8 @@ def set_userinfo():
 # 修改用户名
 @auth.route("/set_username/", methods=["POST"])
 def set_username():
-    id = session.get("user_id")
+    id = request.json["user_id"]
+    # id = session.get("user_id")
     user = User.query.get(id)
     new_username1 = request.json["username"]
     lt = ["+", "-", "*", "/", "!", "@", "#", "$", "%",
@@ -104,10 +105,12 @@ def set_username():
         return jsonify({"code": 200, "msg": "修改成功"})
     return jsonify({"code": 201, "msg": "先登录在来吧"})
 
+
 # 修改密码
 @auth.route("/set_password/", methods=["POST"])
 def set_password():
-    id = session.get("user_id")
+    id = request.json["user_id"]
+    # id = session.get("user_id")
     user = User.query.get(id)
     new_password = request.json["password"]
     # new_username = User.query.filter_by(password=new_username1).first()
@@ -149,7 +152,8 @@ def set_avatar_url():
         abort(404)
     if not request.json:
         abort(400)
-    id = session.get("user_id")
+    id = request.json["user_id"]
+    # id = session.get("user_id")
     if id:
         user = User.query.get(id)
         user.avatar_url = avatar_url
@@ -171,7 +175,8 @@ def bad_request(e):
 
 @auth.route('/profile/', methods=["POST"])
 def profile():
-    user_id = session.get("id")
+    user_id = request.json['user_id']
+    # user_id = session.get("id")
     user = User.query.filter_by(id=user_id).first()
     if not user:
         result = {
