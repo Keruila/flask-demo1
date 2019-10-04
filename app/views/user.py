@@ -112,14 +112,20 @@ def set_password():
     id = request.json["user_id"]
     # id = session.get("user_id")
     user = User.query.get(id)
+    old_password = request.json["oldpassword"]
     new_password = request.json["password"]
+    new_password2 = request.json["password2"]
     # new_username = User.query.filter_by(password=new_username1).first()
     if user is None:
         abort(404)
     if not request.json:
         abort(400)
+    if not check_password_hash(user.password, old_password):
+        return jsonify({"code": 201, "msg": "旧密码输入有误"})
+    if new_password != new_password2:
+        return jsonify({"code":201, "msg":"两次输入密码不一致"})
     if check_password_hash(user.password, new_password):
-        return jsonify({"code": 201, "msg": "密码不能重复"})
+        return jsonify({"code": 201, "msg": "密码不能与旧密码相同"})
 
     if id:
         user = User.query.get(id)
@@ -127,6 +133,8 @@ def set_password():
         db.session.commit()
         return jsonify({"code": 200, "msg": "修改成功"})
     return jsonify({"code": 201, "msg": "先登录在来吧"})
+
+
 
 
 @auth.route("/get_avatar_url/", methods=["POST"])
