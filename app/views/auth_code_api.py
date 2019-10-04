@@ -20,8 +20,6 @@ conn_pool = redis.ConnectionPool(host='127.0.0.1', port=6379, decode_responses=T
 r = redis.Redis(connection_pool=conn_pool)
 
 
-
-
 @check_code.route("/code/", methods=["POST"])
 def code():
     phone = request.json["phone"]
@@ -30,11 +28,13 @@ def code():
     u = User.query.filter_by(phone=phone).first
     if u:
         checkcode = ''
-        a = str(random.randint(0, 9))
-        b = str(random.randint(0, 9))
-        c = str(random.randint(0, 9))
-        d = str(random.randint(0, 9))
-        checkcode = checkcode + a + b + c + d
+        # a = str(random.randint(0, 9))
+        # b = str(random.randint(0, 9))
+        # c = str(random.randint(0, 9))
+        # d = str(random.randint(0, 9))
+        # checkcode = checkcode + a + b + c + d
+        for i in range(0, 4):
+            checkcode += str(random.randint(0, 9))
         url = "http://106.ihuyi.com/webservice/sms.php?method=Submit"
         # APIID
         account = "C13334102"
@@ -62,7 +62,7 @@ def code():
         # data 请求的数据
         print(response.content.decode())
         r.set(phone, checkcode, ex=120)
-        return jsonify({"code": 201, "data": checkcode, "msg": "发送成功"})
+        return jsonify({"code": 200, "data": checkcode, "msg": "发送成功"})
     return jsonify({"code": 201, "msg": "请输入正确的手机号码"})
 
 
@@ -89,7 +89,8 @@ def forget_password():
     if check_password_hash(user.password, new_password):
         return jsonify({"code": 201, "msg": "新密码和旧密码不能重复"})
     if user:
-        if checkcode != None:
+
+        if checkcode!= None:
             if check_code == checkcode:
                 user.password = generate_password_hash(new_password)
                 db.session.commit()
