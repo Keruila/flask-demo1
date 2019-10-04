@@ -37,8 +37,7 @@ def add_order():
         id=order_id,
         user_id=user_id,
         status=0,
-        total_price=total_price,
-        address="翻斗小区"
+        total_price=total_price
     )
     db.session.add(new_order)
 
@@ -50,8 +49,54 @@ def add_order():
         )
         db.session.add(sub_order)
     db.session.commit()
+
     result = {
         'code': 200,
-        'msg': '订单已生成'
+        'msg': '订单已生成',
+        'order_id': order_id
+    }
+    return jsonify(result)
+
+
+@order.route('/all/', methods=["POST"])
+def all_orders():
+    user_id = request.json['user_id']
+    if not user_id:
+        result = {
+            'code': 204,
+            'msg': '缺少user_id',
+        }
+        return jsonify(result)
+
+    orders = Order.query.filter_by(user_id=user_id).all()  # 该用户的所有订单
+    data = []
+    for o in orders:
+        if o.status == 0:
+            status = "未付款"
+        elif o.status == 1:
+            status = "已付款"
+        else:
+            status = "未付款"
+
+        doors = []
+        for g in o.goods:
+            good_info = dict(
+                id=g.id,
+                count=g.count
+            )
+            doors.append(good_info)
+
+        order_info = dict(
+            id=o.id,
+            status=status,
+            total_price=o.total_price,
+            order_generation_time=o.order_generation_time,
+            goods=doors
+        )
+        data.append(order_info)
+    result = {
+        'code': 200,
+        'msg': '成功',
+        'data': data
     }
     return jsonify(result)

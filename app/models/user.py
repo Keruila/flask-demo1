@@ -84,18 +84,18 @@ class DecoratorCase(db.Model):
 
 class Order(db.Model):
     __tablename__ = 'order'
-    # id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id = db.Column(db.String(50), primary_key=True)  # 订单编号
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # 用户id
     status = db.Column(db.Integer, default=0)  # 订单状态，0未付款，1已付款，2已签收
-    total_count = db.Column(db.Integer, default=0)  # 商品总数量
     total_price = db.Column(db.Float, default=0.00)  # 商品总价
-    fare = db.Column(db.Integer, default=0)  # 运费
-    pay_money = db.Column(db.Float, default=0.00)  # 实际支付金额
-    address = db.Column(db.String(100), nullable=False)  # 收货地址，没有用QAQ
     order_generation_time = db.Column(db.DateTime, default=datetime.datetime.now)  # 订单生成时间
     pay_time = db.Column(db.DateTime, default=datetime.datetime.now)  # 付款时间
     goods = db.relationship('SubOrder', backref='order')  # 该订单的商品
+
+    # total_count = db.Column(db.Integer, default=0)  # 商品总数量
+    # fare = db.Column(db.Integer, default=0)  # 运费
+    # pay_money = db.Column(db.Float, default=0.00)  # 实际支付金额
+    # address = db.Column(db.String(100), nullable=False)  # 收货地址，没有用QAQ
 
 
 class SubOrder(db.Model):
