@@ -63,7 +63,7 @@ def code():
         print(response.content.decode())
         r.set(phone, checkcode, ex=120)
         return jsonify({"code": 200, "data": checkcode, "msg": "发送成功"})
-    return jsonify({"code": 201, "msg": "请输入正确的手机号码"})
+    return jsonify({"code": 201, "msg": "该手机号码还未注册无法执行该操作"})
 
 
 # 忘记密码
@@ -96,7 +96,7 @@ def forget_password():
                 db.session.commit()
                 return jsonify({"code": 200, "msg": "修改成功"})
         return jsonify({"code": 201, "msg": "验证码已过期"})
-    return jsonify({"code": 201, "msg": "请先注册"})
+    return jsonify({"code": 201, "msg": "该手机号码还未注册请先注册"})
 
 
 # 错误的定制
