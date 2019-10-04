@@ -10,6 +10,7 @@ from app.views.shopping_api import shopping
 from app.views.order_api import order
 from app.views.search import search
 from app.views.orders_api import alipay
+from app.views.auth_code_api import check_code
 from app.extensions import config_extensions
 from app.admin_view import init_admin
 from app.models.user import User
@@ -43,6 +44,7 @@ def create_app(config_name):
     app.register_blueprint(alipay)
     app.register_blueprint(search)
     app.register_blueprint(order)
+    app.register_blueprint(check_code)
     config_extensions(app)
     init_admin(app)
     return app
