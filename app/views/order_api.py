@@ -71,13 +71,7 @@ def all_orders():
     orders = Order.query.filter_by(user_id=user_id).all()  # 该用户的所有订单
     data = []
     for o in orders:
-        if o.status == 0:
-            status = "未付款"
-        elif o.status == 1:
-            status = "已付款"
-        else:
-            status = "未付款"
-
+        status = "已付款" if o.status == 1 else "未付款"
         doors = []
         for g in o.goods:
             good_info = dict(
@@ -98,5 +92,73 @@ def all_orders():
         'code': 200,
         'msg': '成功',
         'data': data
+    }
+    return jsonify(result)
+
+
+@order.route('/detail/', methods=["POST"])
+def order_detail():
+    """根据订单id获取订单信息"""
+    order_id = request.json['order_id']
+    if not order_id:
+        result = {
+            'code': 204,
+            'msg': '缺少order_id',
+        }
+        return jsonify(result)
+
+    _order = Order.query.filter_by(id=order_id).first()
+    if not _order:
+        result = {
+            'code': 204,
+            'msg': '没有此订单',
+        }
+        return jsonify(result)
+    # for o in orders:
+    status = "已付款" if _order.status == 1 else "未付款"
+    doors = []
+    for g in _order.goods:
+        good_info = dict(
+            id=g.id,
+            count=g.count
+        )
+        doors.append(good_info)
+
+    order_info = dict(
+        id=_order.id,
+        status=status,
+        total_price=_order.total_price,
+        order_generation_time=_order.order_generation_time,
+        goods=doors
+    )
+    result = {
+        'code': 200,
+        'msg': '成功',
+        'data': order_info
+    }
+    return jsonify(result)
+
+
+@order.route('/paid/', methods=["POST"])
+def already_paid():
+    """修改订单状态为已付款"""
+    order_id = request.json['order_id']
+    if not order_id:
+        result = {
+            'code': 204,
+            'msg': '缺少订单id'
+        }
+        return jsonify(result)
+    _order = Order.query.get(order_id)
+    if not _order:
+        result = {
+            'code': 204,
+            'msg': '没有此订单'
+        }
+        return jsonify(result)
+    _order.status = 1  # 变为已付款
+    result = {
+        'code': 200,
+        'msg': '状态改为已付款'
     }
     return jsonify(result)
