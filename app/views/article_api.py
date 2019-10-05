@@ -1,18 +1,35 @@
-from ..models.user import Article, Comment, User
-from ..extensions import db
-from flask import Blueprint, jsonify, session, request
+from ..models.user import Article, User
+from flask import Blueprint, jsonify, request
 import os
 
 news = Blueprint("news", __name__, url_prefix="/news")
 
 
-@news.route('/all_articles/', methods=["POST"])
+@news.route('/all_articles/', methods=["GET"])
 def get_all_article():
     """获得所有文章"""
-    # user_id = request.json["id"]
-    # user = User.query.filter_by(id=user_id).first()
-    # article = Article.query.filter_by(user_id=user_id)
     all_article = Article.query.all()
+    if all_article:
+        data = []
+        for article in all_article:
+            article_info = dict(
+                id=article.id,
+                title=article.title,
+                time=article.publish_time,
+                content=article.content.split('*'),
+            )
+            data.append(article_info)
+        result = {
+            "code": 200,
+            'msg': "success",
+            'data': data
+        }
+        return jsonify(result)
+    return jsonify({
+        "code": 201,
+        'msg': "no data",
+        'data': []
+    })
 
 
 @news.route('/article/', methods=["POST"])
