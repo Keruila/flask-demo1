@@ -75,7 +75,7 @@ def all_orders():
         doors = []
         for g in o.goods:
             good_info = dict(
-                id=g.id,
+                id=g.door_id,
                 count=g.count
             )
             doors.append(good_info)
@@ -119,7 +119,7 @@ def order_detail():
     doors = []
     for g in _order.goods:
         good_info = dict(
-            id=g.id,
+            id=g.door_id,
             count=g.count
         )
         doors.append(good_info)
