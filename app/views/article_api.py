@@ -5,6 +5,7 @@ import os
 news = Blueprint("news", __name__, url_prefix="/news")
 
 
+# 所有文章
 @news.route('/all_articles/', methods=["GET"])
 def get_all_article():
     """获得所有文章"""
@@ -12,11 +13,15 @@ def get_all_article():
     if all_article:
         data = []
         for article in all_article:
+            img_dir = "./app/static/img/article/" + article.img_url
+            img = os.listdir(img_dir)[0]
+            img_path = os.path.join('/static/img/article/', article.img_url, img)
             article_info = dict(
                 id=article.id,
                 title=article.title,
                 time=article.publish_time,
                 content=article.content.split('*'),
+                img_path=img_path
             )
             data.append(article_info)
         result = {
