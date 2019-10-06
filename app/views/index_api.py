@@ -69,6 +69,7 @@ def decoration_case_on_detail():
             for img in img_list:
                 img_path.append(os.path.join('/static/img/case/', case.img_dir_url, img))
             case_info = dict(
+
                 id=case.id,
                 address=case.address,
                 img_path=img_path,
