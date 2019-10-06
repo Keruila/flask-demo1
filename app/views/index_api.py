@@ -65,17 +65,16 @@ def decoration_case_on_detail():
         data = []
         for case in all_case:
             img_list = os.listdir(os.path.join('app/static/img/case', case.img_dir_url))
-            if img_list:
-                img_path = os.path.join('/static/img/case/', case.img_dir_url, img_list[0])
-            else:
-                img_path = '/static/img/case/show_if_no_img.jpg'
-
+            img_path = []
+            for img in img_list:
+                img_path.append(os.path.join('/static/img/case/', case.img_dir_url, img))
             case_info = dict(
+
                 id=case.id,
                 address=case.address,
                 img_path=img_path,
                 description=case.description
-            )
+                )
             data.append(case_info)
         result = {
             'code': 200,
