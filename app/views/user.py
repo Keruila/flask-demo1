@@ -27,6 +27,10 @@ def register():
     for i in lt:
         if i in username:
             return jsonify({"code": 201, "msg": "用户名含有非法字符"})
+    if len(password) < 6:
+        return jsonify({"code": 201, "msg": "密码不得小于6位"})
+    if len(password) > 20:
+        return jsonify({"code": 201, "msg": "密码不得大于20位"})
 
     if re.match(r'^1(3[0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|8[0-9]|9[89])\d{8}$', phone):
         save = User(phone=phone, username=username, password=generate_password_hash(password))

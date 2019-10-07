@@ -1,8 +1,9 @@
-from ..models.user import Order
+from ..models.user import Order, ShoppingCart, SubOrder
 from ..extensions import db
 from flask import Blueprint, jsonify, request
 import os
 from alipay import AliPay
+from datetime import datetime
 
 alipay = Blueprint("alipay", __name__)
 
@@ -42,7 +43,32 @@ def order_pay():
 @alipay.route('/pay_success/', methods=['POST'])
 def check_pay():
     order_id = request.json["order_id"]
-    order = Order.query.filter_by(id=order_id).first()
-    order.status = 1
+    if not order_id:
+        result = {
+            'code': 204,
+            'msg': '缺少订单id'
+        }
+        return jsonify(result)
+    _order = Order.query.filter_by(id=order_id).first()
+    o = SubOrder.query.filter_by(order_id=order_id).first()
+    print(o)
+    if not _order:
+        result = {
+            'code': 204,
+            'msg': '没有此订单'
+        }
+        return jsonify(result)
+    user_id = _order.user_id
+    door_id = o.door_id
+    de = ShoppingCart.query.filter_by(user_id=user_id, door_id=door_id).first()
+    db.session.delete(de)
+    if not de:
+        return jsonify({"code": 200, "msg": "信息错误"})
+    _order.status = 1  # 变为已付款
+    _order.pay_time = datetime.now()
     db.session.commit()
-    return jsonify({'code': 200})
+    result = {
+        'code': 200,
+        'msg': '状态改为已付款'
+    }
+    return jsonify(result)
