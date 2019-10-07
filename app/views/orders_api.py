@@ -3,6 +3,7 @@ from ..extensions import db
 from flask import Blueprint, jsonify, request
 import os
 from alipay import AliPay
+from datetime import datetime
 
 alipay = Blueprint("alipay", __name__)
 
@@ -58,16 +59,13 @@ def check_pay():
         }
         return jsonify(result)
     user_id = _order.user_id
-    print(user_id)
     door_id = o.door_id
-    print(door_id)
     de = ShoppingCart.query.filter_by(user_id=user_id, door_id=door_id).first()
-    print(de)
     db.session.delete(de)
-    print(de, "zzzz")
     if not de:
         return jsonify({"code": 200, "msg": "信息错误"})
     _order.status = 1  # 变为已付款
+    _order.pay_time = datetime.now()
     db.session.commit()
     result = {
         'code': 200,
