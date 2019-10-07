@@ -132,6 +132,6 @@ def video():
     result = {
         'code': 200,
         'msg': 'success',
-        'img_url': "/static/video/test.mp4"
+        'img_url': "/static/video/guanggao.mp4"
     }
     return jsonify(result)
