@@ -14,14 +14,10 @@ class User(db.Model, UserMixin):
     is_manager = db.Column(db.Boolean, default=False)
     avatar_url = db.Column(db.Text, nullable=True, default='/static/img/avatar/default.jpg')  # 图片地址
     article = db.relationship('Article', backref='user')
+    # shopping_cart = db.relationship('ShoppingCart', backref='user')
 
-
-# class Product(db.Model):
-#     __tablename__ = 'product'
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     product_type = db.Column(db.String(30), nullable=False)  # 型号
-#     product_name = db.Column(db.String(30), nullable=False)
-#     image_url = db.Column(db.Text)
+    def __str__(self):
+        return self.username
 
 
 class Collect(db.Model):
@@ -29,6 +25,9 @@ class Collect(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     door_id = db.Column(db.Integer, db.ForeignKey('door.id'), nullable=False)
+    user = db.relationship('User')
+    door = db.relationship('Door')
+
 
 
 class ShoppingCart(db.Model):
@@ -37,6 +36,8 @@ class ShoppingCart(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     door_id = db.Column(db.Integer, db.ForeignKey('door.id'), nullable=False)
     number = db.Column(db.Integer, default=1)
+    user = db.relationship('User', backref='shopping_cart')
+    door = db.relationship('Door', backref='shopping_cart')
 
 
 class Article(db.Model):
@@ -74,6 +75,9 @@ class Door(db.Model):
     description = db.Column(db.Text, nullable=False)
     img_url = db.Column(db.String(30))  # 暂时设置可为空
 
+    def __str__(self):
+        return self.door_type
+
 
 class DecoratorCase(db.Model):
     __tablename__ = 'decorator_case'
@@ -92,6 +96,7 @@ class Order(db.Model):
     order_generation_time = db.Column(db.DateTime, default=datetime.datetime.now)  # 订单生成时间
     pay_time = db.Column(db.DateTime, default=datetime.datetime.now)  # 付款时间
     goods = db.relationship('SubOrder', backref='order')  # 该订单的商品
+    user = db.relationship('User', backref='order')
 
     # total_count = db.Column(db.Integer, default=0)  # 商品总数量
     # fare = db.Column(db.Integer, default=0)  # 运费
@@ -105,3 +110,5 @@ class SubOrder(db.Model):
     order_id = db.Column(db.String(50), db.ForeignKey('order.id'), nullable=False)
     door_id = db.Column(db.Integer, db.ForeignKey('door.id'), nullable=False)
     count = db.Column(db.Integer, default=1)
+    # order = db.relationship('Order')
+    # door = db.relationship('door')

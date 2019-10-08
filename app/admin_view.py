@@ -12,7 +12,7 @@ from flask import url_for, g, flash, request, redirect, render_template
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
 from .extensions import db
-from .models.user import User, Article, Door, DecoratorCase, Order, ShoppingCart
+from .models.user import User, Article, Collect, Door, DecoratorCase, Order, ShoppingCart, SubOrder
 from flask_login import LoginManager, login_required
 from flask_login import current_user, login_user, logout_user
 from werkzeug.security import check_password_hash
@@ -24,7 +24,40 @@ class MyModelView(ModelView):
         return current_user.is_authenticated
 
 
-class MyFileAdmin(FileAdmin):
+# class UserView(ModelView):
+class SubOrderView(ModelView):
+    column_list = [
+        'order_id', 'door_id', 'count'
+    ]
+    can_create = False
+    can_edit = False
+    can_delete = False
+
+
+class CollectView(ModelView):
+    # can_create = False
+    can_edit = False
+    # can_delete = False
+
+
+class OrderView(ModelView):
+    column_list = [
+        'user', 'status', 'total_price', 'order_generation_time',
+        'pay_time', 'goods'
+    ]
+    can_create = False
+    can_edit = False
+    can_delete = False
+
+
+class ShoppingCartView(ModelView):
+    can_create = False
+    can_edit = False
+    can_delete = False
+
+
+
+class ImgManage(FileAdmin):
     def is_accessible(self):
         return current_user.is_authenticated
 
@@ -77,11 +110,13 @@ def init_admin(app):
     admin.add_view(MyModelView(User, db.session))
     admin.add_view(MyModelView(Article, db.session))
     admin.add_view(MyModelView(DecoratorCase, db.session))
+    admin.add_view(CollectView(Collect, db.session))
     admin.add_view(MyModelView(Door, db.session))
-    admin.add_view(MyModelView(ShoppingCart, db.session))
-    admin.add_view(MyModelView(Order, db.session, endpoint='the_order'))
+    admin.add_view(ShoppingCartView(ShoppingCart, db.session))
+    admin.add_view(OrderView(Order, db.session, endpoint='the_order'))
+    admin.add_view(SubOrderView(SubOrder, db.session))
     # 文件管理
-    admin.add_view(MyFileAdmin('app/static/img/', "文件管理"))
+    admin.add_view(ImgManage('app/static/img/'))
     admin.add_view(LogoutView(name='登出'))
     admin.add_view(LoginView(name='登录', endpoint='admin_login'))
 
