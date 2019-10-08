@@ -33,11 +33,17 @@ class SubOrderView(ModelView):
     can_edit = False
     can_delete = False
 
+    def is_accessible(self):
+        return current_user.is_authenticated
+
 
 class CollectView(ModelView):
-    # can_create = False
+    can_create = False
     can_edit = False
-    # can_delete = False
+    can_delete = False
+
+    def is_accessible(self):
+        return current_user.is_authenticated
 
 
 class OrderView(ModelView):
@@ -49,12 +55,17 @@ class OrderView(ModelView):
     can_edit = False
     can_delete = False
 
+    def is_accessible(self):
+        return current_user.is_authenticated
+
 
 class ShoppingCartView(ModelView):
     can_create = False
     can_edit = False
     can_delete = False
 
+    def is_accessible(self):
+        return current_user.is_authenticated
 
 
 class ImgManage(FileAdmin):
