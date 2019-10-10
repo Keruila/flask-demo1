@@ -99,11 +99,14 @@ class LoginView(BaseView):
 
             if not username or not password:
                 flash('缺少用户名或密码')
-                return redirect(url_for('login'))
+                return redirect(url_for('admin_login.login'))
             user = User.query.filter_by(username=username).first()
+            if not user:
+                flash('用户不存在')
+                return redirect(url_for('admin_login.login'))
             if not user.is_manager:
                 flash('你不是管理员')
-                return redirect(url_for('login'))
+                return redirect(url_for('admin_login.login'))
 
             if username == user.username and check_password_hash(user.password, password):
                 login_user(user)
@@ -111,23 +114,23 @@ class LoginView(BaseView):
                 return redirect(url_for('admin.index'))
 
             flash('密码或用户名错误')
-            return redirect(url_for('login'))
+            return redirect(url_for('admin_login.login'))
         return self.render('admin/admin_login.html')
 
 
 def init_admin(app):
     admin = Admin(app, name="后台管理系统", template_mode='bootstrap3')
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
-    admin.add_view(MyModelView(User, db.session))
-    admin.add_view(MyModelView(Article, db.session))
-    admin.add_view(MyModelView(DecoratorCase, db.session))
-    admin.add_view(CollectView(Collect, db.session))
-    admin.add_view(MyModelView(Door, db.session))
-    admin.add_view(ShoppingCartView(ShoppingCart, db.session))
-    admin.add_view(OrderView(Order, db.session, endpoint='the_order'))
-    admin.add_view(SubOrderView(SubOrder, db.session))
+    admin.add_view(MyModelView(User, db.session, name='用户'))
+    admin.add_view(MyModelView(Article, db.session, name='动态'))
+    admin.add_view(MyModelView(DecoratorCase, db.session, name='家装案例'))
+    admin.add_view(CollectView(Collect, db.session, name='收藏'))
+    admin.add_view(MyModelView(Door, db.session, name='商品'))
+    admin.add_view(ShoppingCartView(ShoppingCart, db.session, name='购物车'))
+    admin.add_view(OrderView(Order, db.session, endpoint='the_order', name='订单'))
+    admin.add_view(SubOrderView(SubOrder, db.session, name='子订单'))
     # 文件管理
-    admin.add_view(ImgManage('app/static/img/'))
+    admin.add_view(ImgManage('app/static/img/', name='资源管理'))
     admin.add_view(LogoutView(name='登出'))
     admin.add_view(LoginView(name='登录', endpoint='admin_login'))
 
